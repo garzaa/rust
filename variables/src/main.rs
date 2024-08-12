@@ -13,7 +13,6 @@ fn main() {
     let y = 2;
     let y = 3;
 
-
     let tup: (i32, f64, u8) = (500, 6.4, 1);
     let (x, y, z) = tup;
     println!("{:?}", tup);
@@ -22,4 +21,18 @@ fn main() {
         println!("{number}!");
     }
     println!("LIFTOFF!!!");
+}
+
+fn ascii_capitalize(v: &mut Vec<char>) {
+    let c: &char = &v[0];
+    if c.is_ascii_lowercase() {
+        let c2 = c.to_ascii_uppercase();
+        v[0] = c2;
+    } else {
+        println!("already capitalized {:?}", v);
+    }
+}
+
+fn incr(n: &mut i32) {
+    *n += 1;
 }

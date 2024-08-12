@@ -1,5 +1,3 @@
-https://rust-book.cs.brown.edu/ch04-02-references-and-borrowing.html
-
 # Chapter 2
 - you need to explicitly specify mut, so a bit like JS/TS
 - `let` creates a variable but it's `const` by default
@@ -94,3 +92,24 @@ let num: &mut i32 = &mut v[2];
 - mutable references prevent even reading from what they reference, to avoid memory errors
 - so here, `v` will be completely unusable while `num` is active
 - you can also downgrade a mutable reference to an immutable one by shadowing it
+- data needs to outlive any references to it, which makes sense (you can't call `drop` on something you don't own)
+- so now we need a new type of permission: *flow*
+
+### Flow
+- expected whenever an expression uses an "input reference" (a reference to something as an input, like `&strings[0]`)
+- OR whenever it returns an output reference (like `return s_ref`)
+- a reference has the Flow permission if it's allowed to, yes, *flow*, through a particular expression
+- inputs and outputs to functions have to match to each other with the borrow checker
+- e.g. you can't branch and return a reference to one or another
+- those things are called *lifetime parameters* for later chapters
+
+## 4.3 Fixing Ownership Errors
+- one way to get around reference passing is by passing mutable references in fn args
+- however, *functions should NOT mutate things unless the caller expects it*
+- it is also rare for Rust functions to take ownership of heap objects like Vec and String (it would make the inputs unusable)
+- if, for example, you're using a function to append something to a string: clone it somehow, modify the clone, then return that
+- generally, only ask for as much permissions as you _absolutely_ need
+- pay attention to function names and whether things are expected to modify something in place or add it
+
+bookmark:
+https://rust-book.cs.brown.edu/ch04-03-fixing-ownership-errors.html#fixing-an-unsafe-program-aliasing-and-mutating-a-data-structure
