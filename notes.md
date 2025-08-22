@@ -113,3 +113,71 @@ let num: &mut i32 = &mut v[2];
 
 bookmark:
 https://rust-book.cs.brown.edu/ch04-03-fixing-ownership-errors.html#fixing-an-unsafe-program-aliasing-and-mutating-a-data-structure
+
+- what happens if you want to copy a value out of an array? and then dereference it?
+- strings it'll complain, because the array owns the string in it.
+- DEREFERENCING TAKES OWNERSHIP
+- and you can't do that, it'll be unsafe. both things think they own that string
+- when one leaves scope or whatever, it'll remove it, and the other will be pointing to...undefined
+- why ints and not strings? strings contain heap data, and so they can't be moved.
+- stack data can be copied because it doesn't own heap data, like an i32
+- mutable references (like `&mut i32` are not copyable types)
+- so how do you do it? either
+  - use an immutable reference (doesn't take ownership)
+  - clone it if you want ownership
+  - use `vec::remove` to move it
+- also: Rust doesn't look at function implementations when borrow checking. it's opaque
+- either inline it or use cells...?
+- rust also treats any array index as all of them, beacuse it can vary
+
+## 4.3 Slice Type
+- they're references to a continuous sequence of elements in an array
+- non owning pointer
+- returning indices might be invalid if the string changes in the future
+- instead, they use notations
+```rust
+let s = String::from("hello world");
+
+let hello: &str = &s[0..5];
+let world: &str = &s[6..11];
+```
+- ^^^ those are slices
+- slices are "Fat" pointers, because they have metadata (length of slice)
+- because slices are references, they change permissions on referenced data
+- string literals are slices - they point to a specific part of the compiled binary
+
+Quiz recap:
+
+Say you are writing a function with the following spec:
+
+    find_contains takes as input a collection of strings and a target substring. It returns a list of all the strings in the collection that contain the target substring.
+
+Context: For `haystack`, the slice type `&[String]` can accept more inputs than `&Vec<String>`, so it is preferred. For `needle`, the target substring does not need to be heap-allocated, so `&str` is preferred to `String`. For the return type, `Vec<String>` is not desirable because it would require cloning the input strings. `&[String]` is not desirable because it can only return a contiguous subsequence of the input. `Vec<&String>` is the most preferable because it only incurs the cost of allocating the vector, not the strings themselves.
+
+# Chapter 5: Structs
+## Creating
+- they're more similar to Go structs
+- You can use field init shorthand to not do the circus of a = new() { a.name = name; a.number = number}.
+- struct update shorthand lets you specify the changed values first and then do ...templateStruct to do the rest
+- you can also do Unit-like structs for if you want to implement a trait on a type but don't need to store data in it
+- structs usually own their own data, but if they need to reference external data, you need to worry about `lifetimes`
+
+bookmark: https://rust-book.cs.brown.edu/ch05-02-example-structs.html
+
+- when doing struct methods you usually want `&self`
+- `&self` doesn't take ownership and just reads data without writing
+- `&mut self` returns, you guessed it, mutable reference, so you can write to self data
+- `self` is rare, it's for something like transforming the struct into something else, something that needs ownership
+- you can have associated functions (in an `impl` block) that aren't methods, used for constructors mainly
+- you can have multiple `impl` blocks for structs
+- method calls are syntactic sugar for function calls - Rust automatically inserts `&`
+- also, no `a.b()` and `a->b`, Rust automatically references/dereferences them
+if r is a Rectangle struct:
+```rs
+    r.set_width(2);
+    Rectangle::set_width(&mut r, 2);
+```
+- `r.set_width(2)` becomes `Rectangle::set_width(&mut r, 2)`
+- Rust will also unbox things and add the dereference operators
+- there's actually no constructor keyword, the idiomatic way is to implement a `new()` function
+-  
