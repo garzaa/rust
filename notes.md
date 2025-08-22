@@ -94,3 +94,9 @@ let num: &mut i32 = &mut v[2];
 - mutable references prevent even reading from what they reference, to avoid memory errors
 - so here, `v` will be completely unusable while `num` is active
 - you can also downgrade a mutable reference to an immutable one by shadowing it
+
+## 4.4 String slices
+- String preserves ownership, `str` (or `&str`) is a reference and does NOT preserve ownership
+- slices are "fat" pointers, or pointers with metadata
+- slices contain the address and the length of the slice
+- slices have a pointer (8 bytes) and a length (8 bytes)
