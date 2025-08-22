@@ -114,6 +114,12 @@ let num: &mut i32 = &mut v[2];
 bookmark:
 https://rust-book.cs.brown.edu/ch04-03-fixing-ownership-errors.html#fixing-an-unsafe-program-aliasing-and-mutating-a-data-structure
 
+## 4.4 String slices
+- String preserves ownership, `str` (or `&str`) is a reference and does NOT preserve ownership
+- slices are "fat" pointers, or pointers with metadata
+- slices contain the address and the length of the slice
+- slices have a pointer (8 bytes) and a length (8 bytes)
+
 - what happens if you want to copy a value out of an array? and then dereference it?
 - strings it'll complain, because the array owns the string in it.
 - DEREFERENCING TAKES OWNERSHIP
